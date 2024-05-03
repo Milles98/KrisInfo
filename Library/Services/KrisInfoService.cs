@@ -8,42 +8,40 @@ using System.Threading.Tasks;
 
 namespace Library.Services
 {
-    public class KrisInfoService
+    public class KrisInfoService : IKrisInfoService
     {
-        public static async Task GetJsonDataAll()
+        private readonly HttpClient _client;
+        public KrisInfoService(HttpClient client)
         {
-            var days = 100;
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.krisinformation.se");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client = client;
+        }
+        public async Task<List<KrisInfoResponse>> GetJsonDataAll()
+        {
+            var days = 300;
 
-            HttpResponseMessage response = await client.GetAsync($"/v3/news?days={days}");
+            HttpResponseMessage response = await _client.GetAsync($"/v3/news?days={days}");
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
                 try
                 {
                     var messages = JsonConvert.DeserializeObject<List<KrisInfoResponse>>(responseBody);
+                    return messages;
                 }
                 catch (JsonReaderException)
                 {
-                    Console.WriteLine("Prutt! Det funkade inte.");
+                    throw new Exception("Error");
                 }
             }
+            return null;
         }
 
-        public static async Task GetJsonDataOne(int id)
+        public async Task<KrisInfoResponse> GetJsonDataOne(int id)
         {
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.krisinformation.se");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            HttpResponseMessage response = await client.GetAsync($"/v3/news/{id}");
+            HttpResponseMessage response = await _client.GetAsync($"/v3/news/{id}");
             if (!response.IsSuccessStatusCode)
             {
-
+                throw new Exception("Error");
             }
 
             else if (response.IsSuccessStatusCode)
@@ -52,12 +50,14 @@ namespace Library.Services
                 try
                 {
                     var message = JsonConvert.DeserializeObject<KrisInfoResponse>(responseBody);
+                    return message;
                 }
                 catch (JsonReaderException)
                 {
-                    Console.WriteLine("Prutt! Det funkade inte.");
+                    throw new Exception("Error");
                 }
             }
+            return null;
         }
     }
 }

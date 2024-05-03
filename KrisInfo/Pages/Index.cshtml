@@ -8,3 +8,26 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<table class="container table table-bordered">
+    <thead>
+        <tr>
+            <th>Identifier</th>
+            <th>Message</th>
+            <th>Published</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.KrisInfo)
+        {
+            <tr>
+                <td>@item.Identifier</td>
+                <td>@item.PushMessage</td>
+                <td>@item.Published.ToString("yyyy-MM-dd")</td>
+                <td><a asp-page="/Details" asp-route-id="@item.Identifier" class="btn btn-success">View</a></td>
+            </tr>
+        }
+    </tbody>
+
+</table>

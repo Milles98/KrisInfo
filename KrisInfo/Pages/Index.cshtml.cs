@@ -1,3 +1,5 @@
+using Library;
+using Library.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -5,16 +7,17 @@ namespace KrisInfo.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly IKrisInfoService _krisInfoService;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public List<KrisInfoResponse> KrisInfo { get; set; }
+        public IndexModel(IKrisInfoService krisInfoService)
         {
-            _logger = logger;
+            _krisInfoService = krisInfoService;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-
+            KrisInfo = await _krisInfoService.GetJsonDataAll();
         }
     }
 }
