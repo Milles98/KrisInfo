@@ -1,0 +1,21 @@
+﻿@page
+@model KrisInfo.Pages.DetailsModel
+@{
+}
+
+<div class="card card-body shadow">
+    <h1>@Model.KrisInfoResponse.Headline</h1>
+    @Html.Raw(Model.KrisInfoResponse.BodyText)
+    <p>Updated: @Model.KrisInfoResponse.Updated</p>
+    <p>Published: @Model.KrisInfoResponse.Published.ToString("yyyy-MM-dd")</p>
+    <div class="d-flex justify-content-between">
+        @foreach (var item in Model.KrisInfoResponse.Links)
+        {
+            if (item.Text.Contains("Trafikverket"))
+            {
+                <a class="btn btn-info" href="@item.Url" target="_blank" >@item.Text</a>
+            }
+        }
+        <a asp-page="/Index" class="btn btn-primary">Back</a>
+    </div>
+</div>
